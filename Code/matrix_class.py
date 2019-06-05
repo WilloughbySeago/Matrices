@@ -342,19 +342,6 @@ class Matrix:
         return self == other
 
 
-def make(rows, cols, arr=[]):
-    """
-    This combines two functions to create a matrix and the mat field which is where the actual matrix is stored
-    :param rows: int
-    :param cols: int
-    :param arr: list
-    :return: Matrix
-    """
-    m = Matrix(rows, cols, arr)
-    m = m.create()
-    return m
-
-
 def identity(dimension):
     """
     This function returns an identity matrix
