@@ -1,4 +1,4 @@
-from errors import *
+from Code.errors import *
 import math
 
 

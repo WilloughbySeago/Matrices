@@ -1,5 +1,5 @@
-from errors import *
-from vector_class import *
+from Code.errors import *
+from Code.vector_class import *
 
 
 class Matrix:
@@ -19,6 +19,7 @@ class Matrix:
         if self.mat:
             self.rows = len(self.mat)
             self.cols = len(self.mat[0])
+        self.create()
 
     def create(self):
         """
@@ -443,8 +444,8 @@ def rotate(angle, axis, dim=3):
 
 """Below here is testing"""  # -----------------------------------------------------------------------------------------
 
-m1 = make(3, 3, [[3, 2, 4], [5, 6, 7], [1, 8, 9]])
-m2 = make(3, 3, [[5, 3, 2], [2, 8, 6], [3, 6, 7]])
+m1 = Matrix(3, 3, [[3, 2, 4], [5, 6, 7], [1, 8, 9]])
+m2 = Matrix(3, 3, [[5, 3, 2], [2, 8, 6], [3, 6, 7]])
 m3 = from_list([1, 2, 3], 3, 1)
-m4 = make(2, 2, [[1, 0], [0, 1]])
-m5 = make(2, 2, [[1, 0], [0, 1]])
+m4 = Matrix(2, 2, [[1, 0], [0, 1]])
+m5 = Matrix(2, 2, [[1, 0], [0, 1]])
