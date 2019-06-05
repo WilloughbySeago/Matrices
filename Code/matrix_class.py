@@ -407,7 +407,7 @@ def from_vec(vec):
     return from_list(lst, len(lst), 1)
 
 
-def rotate(angle, axis, dim=3):
+def rotate(angle, axis='z', dim=3):
     """
     This is a function which returns a rotation matrix
     :param angle: real number
