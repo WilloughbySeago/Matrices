@@ -44,10 +44,7 @@ class Matrix:
         This is a function that prints the matrix in a nice to look at format
         :return: None
         """
-        print("")
-        for row in self.mat:
-            print(row)
-        print("")
+        print('')
         max_length = 0
         for i in range(self.rows):
             for j in range(self.cols):
@@ -69,6 +66,7 @@ class Matrix:
                     strng += row[i]
             strng += ']'
             print(strng)
+        print('')
 
     def dim(self):
         """
@@ -449,3 +447,5 @@ m2 = Matrix(3, 3, [[5, 3, 2], [2, 8, 6], [3, 6, 7]])
 m3 = from_list([1, 2, 3], 3, 1)
 m4 = Matrix(2, 2, [[1, 0], [0, 1]])
 m5 = Matrix(2, 2, [[1, 0], [0, 1]])
+
+m1.show()
