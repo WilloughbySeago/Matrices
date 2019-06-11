@@ -1,11 +1,13 @@
-from Code.errors import *
 from Code.vector_class import *
+from typing import Union, List, Type, Optional, Any, TypeVar
+
+TNum = TypeVar('TNum', int, float, complex)
 
 
 class Matrix:
-    """This is a class of matrices that is definetly worse than numpy"""
+    """This is a class of matrices that is definitely worse than numpy"""
 
-    def __init__(self, rows, cols, mat=[]):
+    def __init__(self, rows: int, cols: int, mat: Optional[List[List[TNum]]] = None):
         """
         Initialise the matrix
         :param rows: int
@@ -16,7 +18,7 @@ class Matrix:
         self.cols = cols
         # mat is the list of lists containing the data, matrix is the object
         self.mat = mat
-        if self.mat:
+        if self.mat is not None:
             self.rows = len(self.mat)
             self.cols = len(self.mat[0])
         self.create()
@@ -27,7 +29,7 @@ class Matrix:
         It will be a zero matrix if no list is given or will be the list if it is given
         :return: Matrix
         """
-        if not self.mat:
+        if self.mat is None:
             mat = []
             for row in range(0, self.rows):
                 mat.append([])
@@ -39,7 +41,7 @@ class Matrix:
         else:
             return self
 
-    def show(self):
+    def show(self) -> None:
         """
         This is a function that prints the matrix in a nice to look at format
         :return: None
@@ -58,24 +60,24 @@ class Matrix:
                 while len(element) < max_length:
                     element = ' ' + element
                 row.append(element)
-            strng = '['
+            row_string = '['
             for i in range(len(row)):
                 if i < len(row) - 1:
-                    strng += row[i] + '   '
+                    row_string += row[i] + '   '
                 else:
-                    strng += row[i]
-            strng += ']'
-            print(strng)
+                    row_string += row[i]
+            row_string += ']'
+            print(row_string)
         print('')
 
-    def dim(self):
+    def dim(self) -> None:
         """
         This is a function that prints the dimensions of a matrix
         :return: None
         """
         print(f"{self.rows} x {self.cols}")
 
-    def is_square(self):
+    def is_square(self) -> bool:
         """
         This is a function that checks if the matrix is square
         :return: bool
@@ -85,13 +87,13 @@ class Matrix:
         else:
             return False
 
-    def add(self, other):
+    def add(self, other: Union[int, float, Any]):
         """
         This will add a scalar elementwise or add two matrices if the dimensions match
         :param other: Matrix or Scalar
         :return: Matrix
         """
-        if type(other) == Matrix:
+        if isinstance(other, Matrix):
             if self.rows == other.rows and self.cols == other.cols:
                 m = []
                 for row in range(0, self.rows):
@@ -124,7 +126,7 @@ class Matrix:
             error("Cannot add that type, try an integer, float, complex number or matrix")
             raise TypeError
 
-    def mult(self, other):
+    def mult(self, other: Union[int, float, complex, Any]):
         """
         This will multiply a matrix by a scalar or another matrix
         :param other: Matrix or Scalar
@@ -141,7 +143,7 @@ class Matrix:
                     m[row][col] = self.mat[row][col] * other
             return Matrix(self.rows, self.cols, m)
 
-        elif type(other) == Matrix:
+        elif isinstance(other, Matrix):
             if self.cols != other.rows:
                 error("Cannot multiply two matrices of those dimensions")
                 raise DimensionError
@@ -170,7 +172,7 @@ class Matrix:
                   try an integer, float, complex number or matrix""")
             raise TypeError
 
-    def two_x_two_det(self):
+    def two_x_two_det(self) -> Union[int, float, complex]:
         """
         This is a function that will find the determinant of a 2x2 matrix
         :return: Scalar
@@ -181,7 +183,7 @@ class Matrix:
         else:
             return self.mat[0][0] * self.mat[1][1] - self.mat[0][1] * self.mat[1][0]
 
-    def cofactor(self, row, col):
+    def cofactor(self, row: int, col: int) -> Union[int, float, complex]:
         """
         This is a function that will return the cofactor of a given spot in a matrix
         :param row: int
@@ -190,7 +192,7 @@ class Matrix:
         """
         return (-1) ** (col + row) * self.mat[row][col]
 
-    def minor(self, row, col):
+    def minor(self, row: int, col: int):
         """
         This is a function that will return the minor of a given spot in a matrix
         :param row: int
@@ -210,7 +212,7 @@ class Matrix:
         m = Matrix(self.rows - 1, self.cols - 1, m)
         return m
 
-    def det(self, d=0):
+    def det(self, d: Union[int, float] = 0) -> Union[int, float, complex]:
         """
         This is a function that will find the determinant of an n x n matrix
         :param d: Scalar
@@ -237,7 +239,7 @@ class Matrix:
                 m[i].append(self.mat[j][i])
         return Matrix(self.rows, self.cols, m)
 
-    def reshape(self, row, col):
+    def reshape(self, row: int, col: int):
         """
         This is a function that takes a matrix and then reshapes it to the given dimensions
         :param row: int
@@ -261,7 +263,7 @@ class Matrix:
                 error("There are not enough components to fill a matrix of this size")
             raise DimensionError
 
-    def to_list(self):
+    def to_list(self) -> List[Union[int, float, Any]]:
         """
         This is a function that returns a list of all components of matrix
         :return: list
@@ -272,7 +274,7 @@ class Matrix:
                 components.append(self.mat[i][j])
         return components
 
-    def elementwise(self, function, other=None):
+    def elementwise(self, function, other: Optional[Any] = None):
         """
         This is a function that applies a function either to a matrix or between two matrices elementwise
         :param function: function
@@ -300,11 +302,11 @@ class Matrix:
                 error("These matrices are of different dimensions")
                 raise DimensionError
 
-    def mat_mean(self):
+    def mat_mean(self) -> Union[int, float, complex]:
         total = self.mat_sum()
         return total / (self.rows * self.cols)
 
-    def mat_sum(self):
+    def mat_sum(self) -> Union[int, float, complex]:
         total = 0
         for i in range(self.rows):
             for j in range(self.cols):
@@ -342,7 +344,7 @@ class Matrix:
         return self == other
 
 
-def identity(dimension):
+def identity(dimension: int):
     """
     This function returns an identity matrix
     :param dimension: int
@@ -359,7 +361,7 @@ def identity(dimension):
     return Matrix(dimension, dimension, m)
 
 
-def from_range(rows, cols, start=0):
+def from_range(rows: int, cols: int, start=0):
     """
     This function returns a matrix of the given dimensions where each element is just the next in range(maximum)
     :param rows: int
@@ -372,7 +374,7 @@ def from_range(rows, cols, start=0):
     return from_list(components, rows, cols)
 
 
-def from_list(components, rows, cols):
+def from_list(components: List, rows: int, cols: int):
     """
     This is a function that creates a matrix of given dimensions from a list
     :param components: list
@@ -407,7 +409,7 @@ def from_vec(vec):
     return from_list(lst, len(lst), 1)
 
 
-def rotate(angle, axis='z', dim=3):
+def rotate(angle: Union[int, float], axis: str = 'z', dim: int = 3):
     """
     This is a function which returns a rotation matrix
     :param angle: real number
