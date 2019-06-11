@@ -2,7 +2,7 @@ class DimensionError(Exception):
     pass
 
 
-def error(message):
+def error(message: str):
     """
     This is a function to display an error message
     :param message: string
