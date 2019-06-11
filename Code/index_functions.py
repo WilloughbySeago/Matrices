@@ -1,4 +1,4 @@
-def delta(i, j):
+def delta(i: int, j: int) -> int:
     """
     This is the Kronecker delta in 2D
     :param i: int
@@ -11,7 +11,7 @@ def delta(i, j):
         return 0
 
 
-def levi_civita(*args):
+def levi_civita(*args: int) -> int:
     """
     This is the Levi-Civita symbol for 2 or 3 variables
     :param args: int
