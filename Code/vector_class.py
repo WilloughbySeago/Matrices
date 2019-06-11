@@ -1,11 +1,14 @@
 from Code.errors import *
 import math
+from typing import Union, List, Optional, Any, TypeVar
+
+TNum = TypeVar('TNum', int, float, )
 
 
 class Vector:
     """This is a class of vectors"""
 
-    def __init__(self, vec):
+    def __init__(self, vec: List[TNum]) -> None:
         """
         Initialise the vector
         :param vec: list
@@ -13,7 +16,7 @@ class Vector:
         self.vec = vec
         self.length = len(self.vec)
 
-    def dot_prod(self, other):
+    def dot_prod(self, other) -> Union[int, float, complex]:
         """
         This is a function that returns the dot product of two vectors
         :param other: Vector
@@ -22,8 +25,8 @@ class Vector:
         a = self.vec
         b = other.vec
         if len(a) == len(b):
-            adotb = sum([a_i * b_i for a_i, b_i in zip(a, b)])
-            return adotb
+            a_dot_b = sum([a_i * b_i for a_i, b_i in zip(a, b)])
+            return a_dot_b
         else:
             error("Cannot do a dot product with two vectors of these dimensions")
             raise DimensionError
@@ -41,7 +44,7 @@ class Vector:
             y = a[2] * b[0] - a[0] * b[2]
             z = a[0] * b[1] - a[1] * b[0]
             return Vector([x, y, z])
-        elif len(a) != 3 or len(b) != 3:
+        else:
             error("Cannot do a cross product with non-3D vectors")
             raise DimensionError
 
@@ -61,10 +64,10 @@ class Vector:
             error("Can only add a vector to a vector")
             raise TypeError
         else:
-            aplusb = [x + y for x, y in zip(a, b)]
-            return Vector(aplusb)
+            a_plus_b = [x + y for x, y in zip(a, b)]
+            return Vector(a_plus_b)
 
-    def mult(self, scalar):
+    def vec_mult(self, scalar: Union[int, float, complex]):
         """
         This is a function that multiplies a vector by a scalar
         :param scalar: Scalar
@@ -74,15 +77,14 @@ class Vector:
             scaled = [a * scalar for a in self.vec]
             return Vector(scaled)
         else:
-            error("Cannot multiply bu a non-scalar")
+            error("Cannot multiply by a non-scalar")
             raise TypeError
 
-    def mag(self):
+    def mag(self) -> Union[int, float]:
         """
         This is a function that returns the magnitude of a vector
         :return: Scalar
         """
-
         return math.sqrt(sum([x ** 2 for x in self.vec]))
 
     def unit(self):
@@ -91,10 +93,10 @@ class Vector:
         :return: Vector
         """
         mag = self.mag()
-        unit = self.mult(1 / mag)
+        unit = self.vec_mult(1 / mag)
         return unit
 
-    def angle(self, other):
+    def angle(self, other) -> Union[int, float]:
         """
         This is a function that calculates the angle between two vectors
         :param other: Vector
@@ -121,21 +123,21 @@ class Vector:
             v.append(function(component))
         return Vector(v)
 
-    def vec_mean(self):
+    def vec_mean(self) -> Union[int, float, complex]:
         """
         This is a function that returns the mean of all values in a vector
         :return: Scalar
         """
         return sum(self.vec) / len(self.vec)
 
-    def vec_sum(self):
+    def vec_sum(self) -> Union[int, float, complex]:
         """
         This is a function that returns the sum of all elemts of a vector
         :return: Scalar
         """
         return sum(self.vec)
 
-    def vec_is_equal(self, other):
+    def vec_is_equal(self, other) -> bool:
         if type(self) != type(other):
             return False
         if type(self) == Vector:
@@ -148,3 +150,7 @@ class Vector:
 
 
 """Below here is testing"""  # -----------------------------------------------------------------------------------------
+
+v1 = Vector([1, 0, 0])
+v2 = Vector([0, 1, 0])
+print(v2.angle(v1))

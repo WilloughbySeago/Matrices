@@ -1,5 +1,5 @@
 from Code.vector_class import *
-from typing import Union, List, Type, Optional, Any, TypeVar
+from typing import Union, List, Optional, Any, TypeVar
 
 TNum = TypeVar('TNum', int, float, complex)
 
