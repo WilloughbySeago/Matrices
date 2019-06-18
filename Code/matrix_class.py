@@ -23,6 +23,9 @@ class Matrix:
             self.cols = len(self.mat[0])
         self.create()
 
+    def __repr__(self):
+        return str(self.mat)
+
     def create(self):
         """
         This is a function that will create and return a matrix
@@ -436,3 +439,6 @@ m2 = Matrix(3, 3, [[5, 3, 2], [2, 8, 6], [3, 6, 7]])
 m3 = from_list([1, 2, 3], 3, 1)
 m4 = Matrix(2, 2, [[1, 0], [0, 1]])
 m5 = Matrix(2, 2, [[1, 0], [0, 1]])
+m6 = Matrix(1, 1, [[1]])
+
+print(m1)
