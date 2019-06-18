@@ -1,6 +1,6 @@
 from Code.matrix_class import *
-from Code.vector_class import *
-from Code.errors import *
+# from Code.vector_class import *
+# from Code.errors import *
 import io
 import sys
 
@@ -75,3 +75,25 @@ def test_is_square_false():
     assert not m.is_square()
 
 
+def test_add_scalar():
+    m = Matrix(2, 3, [[1, 2, 3], [4, 5, 6]])
+    m = m.add(1)
+    assert m.mat == Matrix(2, 3, [[2, 3, 4], [5, 6, 7]]).mat
+
+
+def test_add_matrix():
+    m1 = Matrix(2, 3, [[1, 2, 3], [4, 5, 6]])
+    m2 = Matrix(2, 3, [[5, 3, 4], [6, 1, 7]])
+    m = m1.add(m2)
+    assert m.mat == Matrix(2, 3, [[6, 5, 7], [10, 6, 13]]).mat
+
+
+def test_add_dim_error():
+    m1 = Matrix(2, 3, [[1, 2, 3], [4, 5, 6]])
+    m2 = Matrix(3, 2)
+    try:
+        m1.add(m2)
+    except DimensionError:
+        assert True
+    else:
+        assert False
