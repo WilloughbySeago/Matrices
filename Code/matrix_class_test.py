@@ -167,3 +167,18 @@ def test_to_list():
     m = Matrix(3, 2, [[1, 2], [4, 5], [7, 8]])
     l = m.to_list()
     assert l == [1, 2, 4, 5, 7, 8]
+
+
+def test_elementwise_1_var():
+    m = Matrix(3, 2, [[1, 2], [4, 5], [7, 8]])
+    f = lambda x: x ** 2
+    result = m.elementwise(f)
+    assert result.mat == Matrix(3, 2, [[1, 4], [16, 25], [49, 64]]).mat
+
+
+def test_elementwise_2_var():
+    m1 = Matrix(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    m2 = Matrix(3, 3, [[6, 3, 7], [1, 7, 2], [8, 2, 3]])
+    f = lambda x, y: x + 2 * y
+    m = m1.elementwise(f, m2)
+    assert m.mat == Matrix(3, 3, [[13, 8, 17], [6, 19, 10], [23, 12, 15]]).mat
