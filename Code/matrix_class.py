@@ -193,7 +193,7 @@ class Matrix:
         :param col: int
         :return: Scalar
         """
-        return (-1) ** (col + row) * self.mat[row][col]
+        return (-1) ** (col - 1 + row - 1) * self.mat[row - 1][col - 1]
 
     def minor(self, row: int, col: int):
         """
@@ -204,10 +204,10 @@ class Matrix:
         """
         m = []
         for i in range(0, self.rows):
-            if i != row:
+            if i != row-1:
                 m.append([])
                 for j in range(0, self.cols):
-                    if j != col:
+                    if j != col-1:
                         if i < row:
                             m[i].append(self.mat[i][j])
                         else:

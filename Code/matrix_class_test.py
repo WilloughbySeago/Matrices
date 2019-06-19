@@ -1,6 +1,6 @@
 from Code.matrix_class import *
 # from Code.vector_class import *
-# from Code.errors import *
+from Code.errors import *
 import io
 import sys
 
@@ -97,3 +97,55 @@ def test_add_dim_error():
         assert True
     else:
         assert False
+
+
+def test_mult_scalar():
+    m = Matrix(2, 3, [[1, 2, 3], [4, 5, 6]])
+    m = m.mult(2)
+    assert m.mat == Matrix(2, 3, [[2, 4, 6], [8, 10, 12]]).mat
+
+
+def test_mult_matrix():
+    m1 = Matrix(2, 3, [[1, 2, 3], [4, 5, 6]])
+    m2 = Matrix(3, 2, [[3, 4], [5, 1], [6, 1]])
+    m = m1.mult(m2)
+    assert m.mat == Matrix(2, 2, [[31, 9], [73, 27]]).mat
+
+
+def test_mult_dim_error():
+    m1 = Matrix(2, 3, [[1, 2, 3], [4, 5, 6]])
+    m2 = Matrix(2, 2, [[3, 4], [5, 1]])
+    try:
+        m1.mult(m2)
+    except DimensionError:
+        assert True
+    else:
+        assert False
+
+
+def test_two_by_two_det():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    det = m1.two_x_two_det()
+    assert det == -2
+
+
+def test_two_by_tw0_det_not_two_by_two_arg():
+    m = Matrix(3, 2)
+    try:
+        m.two_x_two_det()
+    except DimensionError:
+        assert True
+    else:
+        assert False
+
+
+def test_cofactor():
+    m = Matrix(2, 2, [[1, 2], [3, 4]])
+    cofactor = m.cofactor(1, 2)
+    assert cofactor == -2
+
+
+def test_minor():
+    m = Matrix(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    minor = m.minor(2, 3)
+    assert minor.mat == Matrix(2, 2, [[1, 2], [7, 8]]).mat
