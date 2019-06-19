@@ -182,3 +182,20 @@ def test_elementwise_2_var():
     f = lambda x, y: x + 2 * y
     m = m1.elementwise(f, m2)
     assert m.mat == Matrix(3, 3, [[13, 8, 17], [6, 19, 10], [23, 12, 15]]).mat
+
+
+def test_mat_mean():
+    m = Matrix(2, 2, [[1, 2], [3, 4]])
+    mean = m.mat_mean()
+    assert mean == 2.5
+
+
+def test_mat_sum():
+    m = Matrix(2, 2, [[1, 2], [3, 4]])
+    total = m.mat_sum()
+    assert total == 10
+
+
+def test_to_vec():
+    m = Matrix(1, 2, [[1, 2]])
+    assert m.to_vec().vec == [1, 2]
