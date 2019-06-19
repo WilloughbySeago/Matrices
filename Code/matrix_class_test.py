@@ -3,6 +3,7 @@ from Code.matrix_class import *
 from Code.errors import *
 import io
 import sys
+import math
 
 
 def test_can_create_matrix():
@@ -216,3 +217,26 @@ def test_mat_is_equal_false():
 def test_identity():
     i = identity(3)
     assert i.mat == Matrix(3, 3, [[1, 0, 0], [0, 1, 0], [0, 0, 1]]).mat
+
+
+def test_from_range():
+    m = from_range(2, 3, 4)
+    assert m.mat == Matrix(2, 3, [[4, 5, 6], [7, 8, 9]]).mat
+
+
+def test_from_list():
+    m = from_list([1, 2, 3, 4, 5, 6], 2, 3)
+    assert m.mat == Matrix(2, 3, [[1, 2, 3], [4, 5, 6]]).mat
+
+
+def test_from_list_dim_error():
+    try:
+        m = from_list([1, 2, 3], 2, 2)
+    except DimensionError:
+        assert True
+    else:
+        assert False
+
+
+def test_rotate():
+    assert rotate(math.pi).mat == Matrix(3, 3, [[-1, 0, 0], [0, -1, 0], [0, 0, 1]]).mat

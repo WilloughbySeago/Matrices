@@ -1,5 +1,6 @@
 from Code.vector_class import *
 from typing import Union, List, Optional, Any, TypeVar
+import math
 
 TNum = TypeVar('TNum', int, float, complex)
 
@@ -427,9 +428,9 @@ def rotate(angle: Union[int, float], axis: str = 'z', dim: int = 3):
     elif axis == 'x' and dim == 3:
         return from_list([1, 0, 0, 0, c, s, 0, -s, c], 3, 3)
     elif axis == 'y' and dim == 3:
-        return from_list([c, 0, -s, 0, 1, 0, s, 0, c])
+        return from_list([c, 0, -s, 0, 1, 0, s, 0, c], 3, 3)
     elif axis == 'z' and dim == 3:
-        return from_list([c, s, 0, -s, c, 0, 0, 0, 1])
+        return from_list([c, s, 0, -s, c, 0, 0, 0, 1], 3, 3)
 
 
 """Below here is testing"""  # -----------------------------------------------------------------------------------------
