@@ -149,3 +149,21 @@ def test_minor():
     m = Matrix(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     minor = m.minor(2, 3)
     assert minor.mat == Matrix(2, 2, [[1, 2], [7, 8]]).mat
+
+
+def test_transpose():
+    m = Matrix(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    transpose = m.transpose()
+    assert transpose.mat == Matrix(3, 3, [[1, 4, 7], [2, 5, 8], [3, 6, 9]]).mat
+
+
+def test_reshape():
+    m = Matrix(3, 2, [[1, 2], [4, 5], [7, 8]])
+    reshaped = m.reshape(2, 3)
+    assert reshaped.mat == Matrix(2, 3, [[1, 2, 4], [5, 7, 8]]).mat
+
+
+def test_to_list():
+    m = Matrix(3, 2, [[1, 2], [4, 5], [7, 8]])
+    l = m.to_list()
+    assert l == [1, 2, 4, 5, 7, 8]
