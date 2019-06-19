@@ -199,3 +199,20 @@ def test_mat_sum():
 def test_to_vec():
     m = Matrix(1, 2, [[1, 2]])
     assert m.to_vec().vec == [1, 2]
+
+
+def test_mat_is_equal_true():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    m2 = Matrix(2, 2, [[1, 2], [3, 4]])
+    assert m1.mat_is_equal(m2)
+
+
+def test_mat_is_equal_false():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    m2 = Matrix(2, 2, [[1, 2], [3, 5]])
+    assert not m1.mat_is_equal(m2)
+
+
+def test_identity():
+    i = identity(3)
+    assert i.mat == Matrix(3, 3, [[1, 0, 0], [0, 1, 0], [0, 0, 1]]).mat
