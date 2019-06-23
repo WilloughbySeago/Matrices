@@ -25,7 +25,30 @@ class Matrix:
         self.create()
 
     def __repr__(self):
-        return str(self.mat)
+        # return str(self.mat)
+        string = ''
+        max_length = 0
+        for k in range(self.rows):
+            for j in range(self.cols):
+                x = len(str(self.mat[k][j]))
+                if x > max_length:
+                    max_length = x
+        for k in range(self.rows):
+            row = []
+            for j in range(self.cols):
+                element = str(self.mat[k][j])
+                while len(element) < max_length:
+                    element = ' ' + element
+                row.append(element)
+            row_string = '['
+            for k in range(len(row)):
+                if k < len(row) - 1:
+                    row_string += row[k] + '   '
+                else:
+                    row_string += row[k]
+            row_string += ']'
+            string += row_string + '\n'
+        return string
 
     def create(self):
         """
@@ -52,24 +75,24 @@ class Matrix:
         """
         print('')
         max_length = 0
-        for i in range(self.rows):
+        for k in range(self.rows):
             for j in range(self.cols):
-                x = len(str(self.mat[i][j]))
+                x = len(str(self.mat[k][j]))
                 if x > max_length:
                     max_length = x
-        for i in range(self.rows):
+        for k in range(self.rows):
             row = []
             for j in range(self.cols):
-                element = str(self.mat[i][j])
+                element = str(self.mat[k][j])
                 while len(element) < max_length:
                     element = ' ' + element
                 row.append(element)
             row_string = '['
-            for i in range(len(row)):
-                if i < len(row) - 1:
-                    row_string += row[i] + '   '
+            for k in range(len(row)):
+                if k < len(row) - 1:
+                    row_string += row[k] + '   '
                 else:
-                    row_string += row[i]
+                    row_string += row[k]
             row_string += ']'
             print(row_string)
         print('')
@@ -336,15 +359,14 @@ class Matrix:
             raise DimensionError
 
     def mat_is_equal(self, other):
-        if type(self) != type(other):
+        if not isinstance(other, Matrix):
             return False
-        if type(self) == Matrix:
-            if (self.rows, self.cols) == (other.rows, other.cols):
-                for i in range(self.rows):
-                    for j in range(self.cols):
-                        if self.mat[i][j] != other.mat[i][j]:
-                            return False
-                return True
+        if (self.rows, self.cols) == (other.rows, other.cols):
+            for i in range(self.rows):
+                for j in range(self.cols):
+                    if self.mat[i][j] != other.mat[i][j]:
+                        return False
+            return True
         return self == other
 
 

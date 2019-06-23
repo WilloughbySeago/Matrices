@@ -1,8 +1,8 @@
 from Code.errors import *
 import math
-from typing import Union, List, Optional, Any, TypeVar
+from typing import Union, List, TypeVar
 
-TNum = TypeVar('TNum', int, float, )
+TNum = TypeVar('TNum', int, float, complex)
 
 
 class Vector:
@@ -16,12 +16,18 @@ class Vector:
         self.vec = vec
         self.length = len(self.vec)
 
+    def __repr__(self):
+        return str(self.vec)
+
     def dot_prod(self, other) -> Union[int, float, complex]:
         """
         This is a function that returns the dot product of two vectors
         :param other: Vector
         :return: Scalar
         """
+        if not isinstance(other, Vector):
+            error('Other must be a vector')
+            raise TypeError
         a = self.vec
         b = other.vec
         if len(a) == len(b):
@@ -37,6 +43,9 @@ class Vector:
         :param other: Vector
         :return: Vector
         """
+        if not isinstance(other, Vector):
+            error('Other must be a 3D vector')
+            raise TypeError
         a = self.vec
         b = other.vec
         if len(a) == 3 and len(b) == 3:
@@ -54,15 +63,14 @@ class Vector:
         :param other: Vector
         :return: Vector
         """
-
+        if not isinstance(other, Vector):
+            error('This function is for adding vectors, \nto add elementwise use self.elementwise()')
+            raise TypeError
         a = self.vec
         b = other.vec
         if len(a) != len(b):
             error("Cannot add vectors of different dimensions")
             raise DimensionError
-        elif type(b) != type(a):
-            error("Can only add a vector to a vector")
-            raise TypeError
         else:
             a_plus_b = [x + y for x, y in zip(a, b)]
             return Vector(a_plus_b)
@@ -102,11 +110,11 @@ class Vector:
         :param other: Vector
         :return: Scalar
         """
-        if type(self) == type(other):
-            adotb = self.dot_prod(other)
+        if isinstance(other, Vector):
+            a_dot_b = self.dot_prod(other)
             a = self.mag()
             b = other.mag()
-            angle = math.acos(adotb / (a * b))
+            angle = math.acos(a_dot_b / (a * b))
             return angle
         else:
             error("Cannot work out angle between non-vectors")
@@ -118,10 +126,7 @@ class Vector:
         :param function: function
         :return: Vector
         """
-        v = []
-        for component in self.vec:
-            v.append(function(component))
-        return Vector(v)
+        return Vector([function(x) for x in self.vec])
 
     def vec_mean(self) -> Union[int, float, complex]:
         """
@@ -138,19 +143,14 @@ class Vector:
         return sum(self.vec)
 
     def vec_is_equal(self, other) -> bool:
-        if type(self) != type(other):
+        if not isinstance(other, Vector):
             return False
-        if type(self) == Vector:
-            if len(self.vec) != len(other.vec):
+        if len(self.vec) != len(other.vec):
+            return False
+        for i in range(len(self.vec)):
+            if self.vec[i] != other.vec[i]:
                 return False
-            for i in range(len(self.vec)):
-                if self.vec[i] != other.vec[i]:
-                    return False
         return True
 
 
 """Below here is testing"""  # -----------------------------------------------------------------------------------------
-
-v1 = Vector([1, 0, 0])
-v2 = Vector([0, 1, 0])
-print(v2.angle(v1))

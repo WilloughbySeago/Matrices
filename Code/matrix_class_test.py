@@ -231,7 +231,7 @@ def test_from_list():
 
 def test_from_list_dim_error():
     try:
-        m = from_list([1, 2, 3], 2, 2)
+        from_list([1, 2, 3], 2, 2)
     except DimensionError:
         assert True
     else:
