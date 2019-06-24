@@ -152,5 +152,36 @@ class Vector:
                 return False
         return True
 
+    def __add__(self, other):
+        return self.vec_add(other)
+
+    def __sub__(self, other):
+        neg_other = other.vec_mult(-1)
+        return self + neg_other
+
+    def __mul__(self, other):
+        return self.dot_prod(other)
+
+    def __matmul__(self, other):
+        return self.cross_prod(other)
+
+    def __truediv__(self, other):
+        if type(other) in [int, float, complex]:
+            inverse = 1 / other
+            return self.vec_mult(inverse)
+
+    def __eq__(self, other):
+        return self.vec_is_equal(other)
+
+    def __ne__(self, other):
+        return not self.vec_is_equal(other)
+
+    def __neg__(self):
+        return self.vec_mult(-1)
+
 
 """Below here is testing"""  # -----------------------------------------------------------------------------------------
+
+v1 = Vector([1, 2, 3])
+v2 = Vector([4, 5, 6])
+print(-v1)
