@@ -187,10 +187,10 @@ class Matrix:
                         for k in range(0, other.rows):
                             b.append(other.mat[k][j])
                         b = Vector(b)
-                        print(a.vec)
-                        print(b.vec)
+                        # print(a.vec)
+                        # print(b.vec)
                         c = a.dot_prod(b)
-                        print(c)
+                        # print(c)
                         m[i][j] = c
                 return Matrix(self.rows, other.cols, m)
 
@@ -228,10 +228,10 @@ class Matrix:
         """
         m = []
         for i in range(0, self.rows):
-            if i != row-1:
+            if i != row - 1:
                 m.append([])
                 for j in range(0, self.cols):
-                    if j != col-1:
+                    if j != col - 1:
                         if i < row:
                             m[i].append(self.mat[i][j])
                         else:
@@ -369,6 +369,38 @@ class Matrix:
             return True
         return self == other
 
+    def __add__(self, other):
+        return self.add(other)
+
+    def __sub__(self, other):
+        if isinstance(other, Matrix):
+            neg_other = other.mult(-1)
+            return self.add(neg_other)
+        elif type(other) in [int, float, complex]:
+            return self.add(-other)
+
+    def __mul__(self, other):
+        return self.elementwise(lambda x, y: x * y, other)
+
+    def __matmul__(self, other):
+        return self.mult(other)
+
+    def __truediv__(self, other):
+        if type(other) in [int, float, complex]:
+            inverse = 1 / other
+            return self.mult(inverse)
+
+    def __eq__(self, other):
+        if not isinstance(other, Matrix):
+            return False
+        return self.mat == other.mat
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __neg__(self):
+        return self.mult(-1)
+
 
 def identity(dimension: int):
     """
@@ -457,9 +489,15 @@ def rotate(angle: Union[int, float], axis: str = 'z', dim: int = 3):
 
 """Below here is testing"""  # -----------------------------------------------------------------------------------------
 
-# m1 = Matrix(3, 3, [[3, 2, 4], [5, 6, 7], [1, 8, 9]])
+m1 = Matrix(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 # m2 = Matrix(3, 3, [[5, 3, 2], [2, 8, 6], [3, 6, 7]])
 # m3 = from_list([1, 2, 3], 3, 1)
 # m4 = Matrix(2, 2, [[1, 0], [0, 1]])
 # m5 = Matrix(2, 2, [[1, 0], [0, 1]])
 # m6 = Matrix(1, 1, [[1]])
+print(m1 - 1)
+
+# TODO:
+#  Add unit tests for new operator definitions (matrices and vectors)
+#  Add type/dimension tests in definitions of operators where needed
+#  Add function like np.linspace

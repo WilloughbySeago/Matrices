@@ -152,6 +152,7 @@ class Vector:
                 return False
         return True
 
+    # Overwrite operators
     def __add__(self, other):
         return self.vec_add(other)
 
@@ -182,6 +183,6 @@ class Vector:
 
 """Below here is testing"""  # -----------------------------------------------------------------------------------------
 
-v1 = Vector([1, 2, 3])
-v2 = Vector([4, 5, 6])
-print(-v1)
+# v1 = Vector([1, 2, 3])
+# v2 = Vector([4, 5, 6])
+# print(-v1)
