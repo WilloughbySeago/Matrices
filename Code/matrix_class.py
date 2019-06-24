@@ -501,3 +501,7 @@ print(m1 - 1)
 #  Add unit tests for new operator definitions (matrices and vectors)
 #  Add type/dimension tests in definitions of operators where needed
 #  Add function like np.linspace
+#  Add a len (__len__) method to Vector
+#  Add a size method to Matrix (should return tuple)
+#  Add __radd__/__rsub__ methods for integer operator matrix/vector scenarios
+#  Add something like @np.vectorize
