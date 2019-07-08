@@ -23,6 +23,7 @@ class Matrix:
             self.rows = len(self.mat)
             self.cols = len(self.mat[0])
         self.create()
+        self.size = (self.rows, self.cols)
 
     def __repr__(self):
         # return str(self.mat)
@@ -355,7 +356,7 @@ class Matrix:
                 v.append(self.mat[i][0])
             return Vector(v)
         else:
-            error("Cannot make a vector of those dimensions")
+            error(f"Cannot make a vector of those dimensions: {self.rows} x {self.cols}")
             raise DimensionError
 
     def mat_is_equal(self, other):
@@ -380,7 +381,11 @@ class Matrix:
             return self.add(-other)
 
     def __mul__(self, other):
-        return self.elementwise(lambda x, y: x * y, other)
+        if type(other) in [int, float, complex]:
+            return self.mult(other)
+        else:
+            error(f"Unsupported operation '*' between types '{type(self)}' and '{type(other)}'")
+            raise TypeError
 
     def __matmul__(self, other):
         return self.mult(other)
@@ -389,6 +394,9 @@ class Matrix:
         if type(other) in [int, float, complex]:
             inverse = 1 / other
             return self.mult(inverse)
+        else:
+            error(f"Unsupported operation '/' between types '{type(self)}' and '{type(other)}'")
+            raise TypeError
 
     def __eq__(self, other):
         if not isinstance(other, Matrix):
@@ -489,19 +497,24 @@ def rotate(angle: Union[int, float], axis: str = 'z', dim: int = 3):
 
 """Below here is testing"""  # -----------------------------------------------------------------------------------------
 
-m1 = Matrix(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# m2 = Matrix(3, 3, [[5, 3, 2], [2, 8, 6], [3, 6, 7]])
-# m3 = from_list([1, 2, 3], 3, 1)
-# m4 = Matrix(2, 2, [[1, 0], [0, 1]])
-# m5 = Matrix(2, 2, [[1, 0], [0, 1]])
-# m6 = Matrix(1, 1, [[1]])
-print(m1 - 1)
+
+def main():
+    m1 = Matrix(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    m2 = Matrix(3, 3, [[5, 3, 2], [2, 8, 6], [3, 6, 7]])
+    m3 = from_list([1, 2, 3], 3, 1)
+    m4 = Matrix(2, 2, [[1, 0], [0, 1]])
+    m5 = Matrix(2, 2, [[1, 0], [0, 1]])
+    m6 = Matrix(1, 1, [[1]])
+    print(m1 * 2)
+    print(dir(Matrix))
+
+
+if __name__ == '__main__':
+    main()
 
 # TODO:
 #  Add unit tests for new operator definitions (matrices and vectors)
 #  Add type/dimension tests in definitions of operators where needed
 #  Add function like np.linspace
-#  Add a len (__len__) method to Vector
 #  Add a size method to Matrix (should return tuple)
 #  Add __radd__/__rsub__ methods for integer operator matrix/vector scenarios
-#  Add something like @np.vectorize

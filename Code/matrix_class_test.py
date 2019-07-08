@@ -6,6 +6,7 @@ import sys
 import math
 
 
+# class methods
 def test_can_create_matrix():
     mat = Matrix(1, 1)
     assert isinstance(mat, Matrix)
@@ -130,7 +131,7 @@ def test_two_by_two_det():
     assert det == -2
 
 
-def test_two_by_tw0_det_not_two_by_two_arg():
+def test_two_by_two_det_not_two_by_two_arg():
     m = Matrix(3, 2)
     try:
         m.two_x_two_det()
@@ -214,6 +215,104 @@ def test_mat_is_equal_false():
     assert not m1.mat_is_equal(m2)
 
 
+def test_add_operator():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    m2 = Matrix(2, 2, [[5, 6], [7, 8]])
+    m = m1 + m2
+    assert m.mat == Matrix(2, 2, [[6, 8], [10, 12]]).mat
+
+
+def test_sub_operator():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    m2 = Matrix(2, 2, [[5, 6], [7, 8]])
+    m = m1 - m2
+    assert m.mat == Matrix(2, 2, [[-4, -4], [-4, -4]]).mat
+
+
+def test_sub_scalar():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    m = m1 - 5
+    assert m.mat == Matrix(2, 2, [[-4, -3], [-2, -1]]).mat
+
+
+def test_mul_operator():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    m = m1 * 2
+    assert m.mat == Matrix(2, 2, [[2, 4], [6, 8]]).mat
+
+
+def test_mul_type_error():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    m2 = Matrix(2, 2, [[5, 6], [7, 8]])
+    try:
+        m = m1 * m2
+    except TypeError:
+        assert True
+    else:
+        assert False
+
+
+def test_matmul_operator():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    m2 = Matrix(2, 2, [[5, 6], [7, 8]])
+    m = m1 @ m2
+    assert m.mat == Matrix(2, 2, [[19, 22], [43, 50]]).mat
+
+
+def test_truediv_operator():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    m = m1 / 2
+    assert m.mat == Matrix(2, 2, [[0.5, 1], [1.5, 2]]).mat
+
+
+def test_truediv_type_error():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    m2 = Matrix(2, 2, [[5, 6], [7, 8]])
+    try:
+        m = m1 / m2
+    except TypeError:
+        assert True
+    else:
+        assert False
+
+
+def test_eq_operator():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    m2 = Matrix(2, 2, [[1, 2], [3, 4]])
+    assert m1 == m2
+
+
+def test_eq_false():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    m2 = Matrix(2, 2, [[1, 2], [3, 5]])
+    assert not m1 == m2
+
+
+def test_ne_false():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    m2 = Matrix(2, 2, [[1, 2], [3, 4]])
+    assert not m1 != m2
+
+
+def test_ne_operator():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    m2 = Matrix(2, 2, [[1, 2], [3, 5]])
+    assert m1 != m2
+
+
+def test_neg_operator():
+    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
+    m = -m1
+    assert m.mat == Matrix(2, 2, [[-1, -2], [-3, -4]]).mat
+
+
+def test_size():
+    m1 = Matrix(3, 2, [[1, 2], [3, 4], [5, 6]])
+    size = m1.size
+    assert size == (3, 2)
+
+
+# static methods
 def test_identity():
     i = identity(3)
     assert i.mat == Matrix(3, 3, [[1, 0, 0], [0, 1, 0], [0, 0, 1]]).mat
