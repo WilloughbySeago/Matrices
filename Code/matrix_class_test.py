@@ -24,7 +24,7 @@ def test_can_show_2by2():
     m.show()
     sys.stdout = sys.__stdout__
     print(output.getvalue())
-    assert output.getvalue() == '\n[1   1]\n[1   1]\n\n'
+    assert output.getvalue() == '[1   1]\n[1   1]\n\n'
 
 
 def test_can_show_1by1():
@@ -34,7 +34,7 @@ def test_can_show_1by1():
     m.show()
     sys.stdout = sys.__stdout__
     print(output.getvalue())
-    assert output.getvalue() == '\n[1]\n\n'
+    assert output.getvalue() == '[1]\n\n'
 
 
 def test_repr_2by2():
@@ -44,7 +44,7 @@ def test_repr_2by2():
     m.show()
     sys.stdout = sys.__stdout__
     print(output.getvalue())
-    assert output.getvalue() == '\n[1   1]\n[1   1]\n\n'
+    assert output.getvalue() == '[1   1]\n[1   1]\n\n'
 
 
 def test_repr_1by1():
@@ -54,7 +54,7 @@ def test_repr_1by1():
     m.show()
     sys.stdout = sys.__stdout__
     print(output.getvalue())
-    assert output.getvalue() == '\n[1]\n\n'
+    assert output.getvalue() == '[1]\n\n'
 
 
 def test_dim():

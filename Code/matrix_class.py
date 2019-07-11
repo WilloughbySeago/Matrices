@@ -9,25 +9,27 @@ class Matrix:
     """This is a class of matrices that is definitely worse than numpy"""
 
     def __init__(self, rows: int, cols: int, mat: Optional[List[List[TNum]]] = None):
-        """
-        Initialise the matrix
+        """Initialise the matrix
+
         :param rows: int
         :param cols: int
-        :param mat: list
+        :param mat: list or None
         """
-        self.rows = rows
-        self.cols = cols
-        # mat is the list of lists containing the data, matrix is the object
+        # mat is the list of lists containing the data, Matrix is the object
         self.mat = mat
-        if self.mat is not None:
+        if self.mat is not None:  # list provided, overwrite given rows/cols
             self.rows = len(self.mat)
             self.cols = len(self.mat[0])
+        else:
+            self.rows = rows
+            self.cols = cols
         self.create()
         self.size = (self.rows, self.cols)
 
     def __repr__(self):
         # return str(self.mat)
         string = ''
+        # find the widest (in terms of characters) entry in the matrix
         max_length = 0
         for k in range(self.rows):
             for j in range(self.cols):
@@ -39,21 +41,21 @@ class Matrix:
             for j in range(self.cols):
                 element = str(self.mat[k][j])
                 while len(element) < max_length:
-                    element = ' ' + element
-                row.append(element)
+                    element = ' ' + element  # add whitespace before the element
+                row.append(element)  # ignore# until it is the length of the longest element
             row_string = '['
-            for k in range(len(row)):
-                if k < len(row) - 1:
-                    row_string += row[k] + '   '
+            for l in range(len(row)):
+                if l < len(row) - 1:
+                    row_string += row[l] + '   '  # add this as a seperator between rows
                 else:
-                    row_string += row[k]
+                    row_string += row[l]
             row_string += ']'
             string += row_string + '\n'
         return string
 
     def create(self):
-        """
-        This is a function that will create and return a matrix
+        """This is a function that will create and return a 2D list of elements
+
         It will be a zero matrix if no list is given or will be the list if it is given
         :return: Matrix
         """
@@ -69,45 +71,17 @@ class Matrix:
         else:
             return self
 
-    def show(self) -> None:
-        """
-        This is a function that prints the matrix in a nice to look at format
-        :return: None
-        """
-        print('')
-        max_length = 0
-        for k in range(self.rows):
-            for j in range(self.cols):
-                x = len(str(self.mat[k][j]))
-                if x > max_length:
-                    max_length = x
-        for k in range(self.rows):
-            row = []
-            for j in range(self.cols):
-                element = str(self.mat[k][j])
-                while len(element) < max_length:
-                    element = ' ' + element
-                row.append(element)
-            row_string = '['
-            for k in range(len(row)):
-                if k < len(row) - 1:
-                    row_string += row[k] + '   '
-                else:
-                    row_string += row[k]
-            row_string += ']'
-            print(row_string)
-        print('')
+    def show(self) -> None:  # deprecate
+        """This is a function that prints the matrix in a nice to look at format"""
+        print(repr(self))
 
     def dim(self) -> None:
-        """
-        This is a function that prints the dimensions of a matrix
-        :return: None
-        """
+        """This is a function that prints the dimensions of a matrix"""
         print(f"{self.rows} x {self.cols}")
 
     def is_square(self) -> bool:
-        """
-        This is a function that checks if the matrix is square
+        """This is a function that checks if the matrix is square
+
         :return: bool
         """
         if self.rows == self.cols:
@@ -116,8 +90,8 @@ class Matrix:
             return False
 
     def add(self, other: Union[int, float, Any]):
-        """
-        This will add a scalar elementwise or add two matrices if the dimensions match
+        """This will add a scalar elementwise or add two matrices if the dimensions match
+
         :param other: Matrix or Scalar
         :return: Matrix
         """
