@@ -23,11 +23,13 @@ class Matrix:
         else:
             self.rows = rows
             self.cols = cols
-        self.create()
-        self.size = (self.rows, self.cols)
+        self._create()
+
+    def __getattr__(self, item):
+        if item == 'size':
+            return self.rows, self.cols
 
     def __repr__(self):
-        # return str(self.mat)
         string = ''
         # find the widest (in terms of characters) entry in the matrix
         max_length = 0
@@ -53,10 +55,11 @@ class Matrix:
             string += row_string + '\n'
         return string
 
-    def create(self):
+    def _create(self):
         """This is a function that will create and return a 2D list of elements
 
         It will be a zero matrix if no list is given or will be the list if it is given
+        Do not call this method from outside the class (or even __init__) it won't do anything
         :return: Matrix
         """
         if self.mat is None:
@@ -95,8 +98,8 @@ class Matrix:
         :param other: Matrix or Scalar
         :return: Matrix
         """
-        if isinstance(other, Matrix):
-            if self.rows == other.rows and self.cols == other.cols:
+        if isinstance(other, Matrix):  # matrix addition
+            if self.rows == other.rows and self.cols == other.cols:  # check addition possible
                 m = []
                 for row in range(0, self.rows):
                     m.append([])
@@ -113,7 +116,7 @@ class Matrix:
                 error("Cannot add two matrices of those dimensions")
                 raise DimensionError
 
-        elif type(other) in [int, float, complex]:
+        elif type(other) in [int, float, complex]:  # scalar addition
             m = []
             for row in range(0, self.rows):
                 m.append([])
@@ -129,12 +132,12 @@ class Matrix:
             raise TypeError
 
     def mult(self, other: Union[int, float, complex, Any]):
-        """
-        This will multiply a matrix by a scalar or another matrix
+        """This will multiply a matrix by a scalar or another matrix
+
         :param other: Matrix or Scalar
         :return: Matrix
         """
-        if type(other) in [int, float, complex]:
+        if type(other) in [int, float, complex]:  # scalar multiplication
             m = []
             for row in range(0, self.rows):
                 m.append([])
@@ -145,8 +148,8 @@ class Matrix:
                     m[row][col] = self.mat[row][col] * other
             return Matrix(self.rows, self.cols, m)
 
-        elif isinstance(other, Matrix):
-            if self.cols != other.rows:
+        elif isinstance(other, Matrix):  # matrix multiplication
+            if self.cols != other.rows:  # check multiplication possible
                 error("Cannot multiply two matrices of those dimensions")
                 raise DimensionError
             else:
@@ -157,15 +160,12 @@ class Matrix:
                         m[i].append(0)
                 for i in range(0, self.rows):
                     for j in range(0, other.cols):
-                        a = Vector(self.mat[i])
+                        a = Vector(self.mat[i])  # create vector from row of self
                         b = []
                         for k in range(0, other.rows):
                             b.append(other.mat[k][j])
-                        b = Vector(b)
-                        # print(a.vec)
-                        # print(b.vec)
+                        b = Vector(b)  # create vector from column of other
                         c = a.dot_prod(b)
-                        # print(c)
                         m[i][j] = c
                 return Matrix(self.rows, other.cols, m)
 
@@ -175,19 +175,19 @@ class Matrix:
             raise TypeError
 
     def two_x_two_det(self) -> Union[int, float, complex]:
-        """
-        This is a function that will find the determinant of a 2x2 matrix
+        """This is a function that will find the determinant of a 2x2 matrix
+
         :return: Scalar
         """
-        if self.rows != 2 or self.cols != 2:
+        if self.rows != 2 or self.cols != 2:  # check correct matrix passed to function
             error("This function can only find the determinant of a 2x2 matrix")
             raise DimensionError
         else:
             return self.mat[0][0] * self.mat[1][1] - self.mat[0][1] * self.mat[1][0]
 
     def cofactor(self, row: int, col: int) -> Union[int, float, complex]:
-        """
-        This is a function that will return the cofactor of a given spot in a matrix
+        """This is a function that will return the cofactor of a given spot in a matrix
+
         :param row: int
         :param col: int
         :return: Scalar
@@ -195,8 +195,8 @@ class Matrix:
         return (-1) ** (col - 1 + row - 1) * self.mat[row - 1][col - 1]
 
     def minor(self, row: int, col: int):
-        """
-        This is a function that will return the minor of a given spot in a matrix
+        """This is a function that will return the minor of a given spot in a matrix
+
         :param row: int
         :param col: int
         :return: Matrix
@@ -215,8 +215,10 @@ class Matrix:
         return m
 
     def det(self, d: Union[int, float] = 0) -> Union[int, float, complex]:
-        """
-        This is a function that will find the determinant of an n x n matrix
+        """This is a function that will find the determinant of an n x n matrix
+
+        DOES NOT WORK
+        TODO: Fix this method
         :param d: Scalar
         :return: Scalar
         """
@@ -230,8 +232,8 @@ class Matrix:
         return d
 
     def transpose(self):
-        """
-        This is a function that will return the transpose of a matrix
+        """This is a function that will return the transpose of a matrix
+
         :return: Matrix
         """
         m = []
@@ -242,14 +244,16 @@ class Matrix:
         return Matrix(self.rows, self.cols, m)
 
     def reshape(self, row: int, col: int):
-        """
-        This is a function that takes a matrix and then reshapes it to the given dimensions
+        """This is a function that takes a matrix and then reshapes it to the given dimensions
+
         :param row: int
         :param col: int
         :return: Matrix
         """
         components = self.to_list()
-        if len(components) == row * col:
+        old_size = len(components)
+        new_size = row * col
+        if old_size == new_size:  # check that reshape is possible
             m = []
             index = 0
             for i in range(row):
@@ -259,15 +263,15 @@ class Matrix:
                     index += 1
             return Matrix(row, col, m)
         else:
-            if len(components) > row * col:
+            if old_size > new_size:
                 error("There are more components than fit in a matrix of that size")
             else:
                 error("There are not enough components to fill a matrix of this size")
             raise DimensionError
 
-    def to_list(self) -> List[Union[int, float, Any]]:
-        """
-        This is a function that returns a list of all components of matrix
+    def to_list(self) -> List[Union[int, float, complex, Any]]:
+        """This is a function that returns a list of all components of matrix
+
         :return: list
         """
         components = []
@@ -277,20 +281,21 @@ class Matrix:
         return components
 
     def elementwise(self, function, other: Optional[Any] = None):
-        """
-        This is a function that applies a function either to a matrix or between two matrices elementwise
+        """This is a function that applies a function either to a matrix or between two matrices elementwise
+
+        To apply a function with a scalar variable pass that variable to the function yourself
         :param function: function
         :param other: Matrix
         :return: Matrix
         """
-        if other is None:
+        if other is None:  # one variable (the element from the matrix) function
             m = []
             for i in range(self.rows):
                 m.append([])
                 for j in range(self.cols):
                     m[i].append(function(self.mat[i][j]))
             return Matrix(self.rows, self.cols, m)
-        else:
+        else:  # two variable (one element from each matrix) function
             if self.rows == other.rows and self.cols == other.cols:
                 m = []
                 for i in range(self.rows):
@@ -305,10 +310,16 @@ class Matrix:
                 raise DimensionError
 
     def mat_mean(self) -> Union[int, float, complex]:
+        """This is a function that will return the mean of all elements in the matrix
+
+        :return: scalar"""
         total = self.mat_sum()
         return total / (self.rows * self.cols)
 
     def mat_sum(self) -> Union[int, float, complex]:
+        """This is a function that will return the sum of all elemets in the matrix
+
+        :return: Scalar"""
         total = 0
         for i in range(self.rows):
             for j in range(self.cols):
@@ -316,8 +327,8 @@ class Matrix:
         return total
 
     def to_vec(self):
-        """
-        Takes a matrix and returns a vector
+        """Takes a matrix (1 x n or n x 1) and returns a vector
+
         :return: Vector
         """
         if self.rows == 1:
@@ -326,7 +337,6 @@ class Matrix:
         elif self.cols == 1:
             v = []
             for i in range(self.rows):
-                print(i)
                 v.append(self.mat[i][0])
             return Vector(v)
         else:
@@ -334,6 +344,10 @@ class Matrix:
             raise DimensionError
 
     def mat_is_equal(self, other):
+        """This function returns true if self and other are the same matrix (not the same object)
+
+        :return: bool
+        """
         if not isinstance(other, Matrix):
             return False
         if (self.rows, self.cols) == (other.rows, other.cols):
@@ -342,12 +356,14 @@ class Matrix:
                     if self.mat[i][j] != other.mat[i][j]:
                         return False
             return True
-        return self == other
+        return False
 
     def __add__(self, other):
+        """Matrix or scalar addition"""
         return self.add(other)
 
     def __sub__(self, other):
+        """Matrix or scalar subtraction"""
         if isinstance(other, Matrix):
             neg_other = other.mult(-1)
             return self.add(neg_other)
@@ -355,6 +371,7 @@ class Matrix:
             return self.add(-other)
 
     def __mul__(self, other):
+        """Scalar or elementwise multiplication"""
         if type(other) in [int, float, complex]:
             return self.mult(other)
         else:
@@ -362,9 +379,11 @@ class Matrix:
             raise TypeError
 
     def __matmul__(self, other):
+        """Matrix multiplication"""
         return self.mult(other)
 
     def __truediv__(self, other):
+        """Scalar division"""
         if type(other) in [int, float, complex]:
             inverse = 1 / other
             return self.mult(inverse)
@@ -373,20 +392,23 @@ class Matrix:
             raise TypeError
 
     def __eq__(self, other):
+        """Test for equality"""
         if not isinstance(other, Matrix):
             return False
         return self.mat == other.mat
 
     def __ne__(self, other):
+        """Test for inequality"""
         return not self == other
 
     def __neg__(self):
+        """Negate every element of the matrix"""
         return self.mult(-1)
 
 
 def identity(dimension: int):
-    """
-    This function returns an identity matrix
+    """This function returns dimension x dimension identity matrix
+
     :param dimension: int
     :return: Matrix
     """
@@ -402,8 +424,8 @@ def identity(dimension: int):
 
 
 def from_range(rows: int, cols: int, start=0):
-    """
-    This function returns a matrix of the given dimensions where each element is just the next in range(maximum)
+    """This function returns a matrix of the given dimensions where each element is just the next in range(maximum)
+
     :param rows: int
     :param cols: int
     :param start: int
@@ -415,14 +437,16 @@ def from_range(rows: int, cols: int, start=0):
 
 
 def from_list(components: List, rows: int, cols: int):
-    """
-    This is a function that creates a matrix of given dimensions from a list
+    """This is a function that creates a matrix of given dimensions from a list
+
     :param components: list
     :param rows: int
     :param cols: int
     :return: Matrix
     """
-    if len(components) == rows * cols:
+    length_components = len(components)
+    size_matrix = rows * cols
+    if length_components == size_matrix:
         m = []
         index = 0
         for i in range(rows):
@@ -432,7 +456,7 @@ def from_list(components: List, rows: int, cols: int):
                 index += 1
         return Matrix(rows, cols, m)
     else:
-        if len(components) > rows * cols:
+        if length_components > size_matrix:
             error("There are more components than fit in this matrix")
         else:
             error("There aren't enough components to fill this matrix")
@@ -440,8 +464,8 @@ def from_list(components: List, rows: int, cols: int):
 
 
 def from_vec(vec):
-    """
-    Takes a vector and returns a matrix
+    """Takes a vector and returns a matrix
+
     :param vec: Vector
     :return: Matrix
     """
@@ -450,8 +474,8 @@ def from_vec(vec):
 
 
 def rotate(angle: Union[int, float], axis: str = 'z', dim: int = 3):
-    """
-    This is a function which returns a rotation matrix
+    """This is a function which returns a rotation matrix
+
     :param angle: real number
     :param axis: 'x', 'y' or 'z'
     :param dim: int (2 or 3)
