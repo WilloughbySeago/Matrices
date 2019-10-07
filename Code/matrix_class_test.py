@@ -215,6 +215,21 @@ def test_mat_is_equal_false():
     assert not m1.mat_is_equal(m2)
 
 
+def test_trace():
+    m1 = Matrix(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    assert m1.trace() == 15
+
+
+def test_trace_dim_error():
+    m1 = Matrix(2, 3, [[1, 2, 3], [4, 5, 6]])
+    try:
+        m1.trace()
+    except DimensionError:
+        assert True
+    else:
+        assert False
+
+
 def test_add_operator():
     m1 = Matrix(2, 2, [[1, 2], [3, 4]])
     m2 = Matrix(2, 2, [[5, 6], [7, 8]])

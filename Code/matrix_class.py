@@ -358,6 +358,18 @@ class Matrix:
             return True
         return False
 
+    def trace(self):
+        """This function returns the trace (sum of the leading diagonal) of a matrix
+
+        :return: float
+        """
+        if not self.is_square():
+            raise DimensionError(f"Trace is only defined for a square matrix. This matrix is {self.rows}x{self.cols}")
+        total = 0
+        for i in range(self.rows):
+            total += self.mat[i][i]
+        return total
+
     def __add__(self, other):
         """Matrix or scalar addition"""
         return self.add(other)
@@ -503,8 +515,7 @@ def main():
     m4 = Matrix(2, 2, [[1, 0], [0, 1]])
     m5 = Matrix(2, 2, [[1, 0], [0, 1]])
     m6 = Matrix(1, 1, [[1]])
-    print(m1 * 2)
-    print(dir(Matrix))
+    print(m2.trace())
 
 
 if __name__ == '__main__':
