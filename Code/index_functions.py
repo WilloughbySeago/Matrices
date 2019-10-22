@@ -2,8 +2,8 @@ from typing import List
 
 
 def delta(i: int, j: int) -> int:
-    """
-    This is the Kronecker delta in 2D
+    """This is the Kronecker delta in 2D
+
     :param i: int
     :param j: int
     :return: int
@@ -15,6 +15,12 @@ def delta(i: int, j: int) -> int:
 
 
 def levi_civita(lst):
+    """This is the Levi Civita symbol for any number of dimensions
+
+    returns 1 for an even permutation, -1 for an odd permutation and 0 if an index is repeated
+    :param lst: list length n containing only the elements in {1, 2, 3,..., n}
+    :return: -1, 0, 1
+    """
     # check for repeated indices
     for i in range(1, len(lst) + 1):
         count = lst.count(i)
