@@ -1,3 +1,6 @@
+from typing import List
+
+
 def delta(i: int, j: int) -> int:
     """
     This is the Kronecker delta in 2D
@@ -11,28 +14,16 @@ def delta(i: int, j: int) -> int:
         return 0
 
 
-def levi_civita(*args: int) -> int:
-    """
-    This is the Levi-Civita symbol for 2 or 3 variables
-    :param args: int
-    :return: int
-    """
-    if len(args) == 3:
-        i = args[0]
-        j = args[1]
-        k = args[2]
-        if (i, j, k) in [(1, 2, 3), (2, 3, 1), (3, 1, 2)]:
-            return 1
-        elif (i, j, k) in [(3, 2, 1), (2, 1, 3), (1, 3, 2)]:
-            return -1
-        else:
+def levi_civita(lst):
+    for i in range(1, len(lst) + 1):
+        count = lst.count(i)
+        if count != 1:
             return 0
-    elif len(args) == 2:
-        i = args[0]
-        j = args[1]
-        if (i, j) == (1, 2):
-            return 1
-        elif (i, j) == (2, 1):
-            return -1
-        else:
-            return 0
+    parity = 1
+    lst = [i - 1 for i in lst]  # arrays start at 0, indices start at 1 so subtract 1 from all values
+    for index in range(len(lst) - 1):
+        if index != lst[index]:
+            parity *= -1
+            new = lst.index(index)
+            lst[index], lst[new] = lst[new], lst[index]
+    return parity
