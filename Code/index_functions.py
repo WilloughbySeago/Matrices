@@ -15,15 +15,19 @@ def delta(i: int, j: int) -> int:
 
 
 def levi_civita(lst):
+    # check for repeated indices
     for i in range(1, len(lst) + 1):
         count = lst.count(i)
         if count != 1:
             return 0
     parity = 1
-    lst = [i - 1 for i in lst]  # arrays start at 0, indices start at 1 so subtract 1 from all values
+    # arrays start at 0, indices start at 1 so subtract 1 from all values
+    lst = [i - 1 for i in lst]
     for index in range(len(lst) - 1):
+        # check if the item is in the right place
         if index != lst[index]:
             parity *= -1
+            # swap to where it should be
             new = lst.index(index)
             lst[index], lst[new] = lst[new], lst[index]
     return parity
