@@ -1,6 +1,8 @@
+from Code.index_functions import *
 from Code.vector_class import *
 from typing import Union, List, Optional, Any, TypeVar
 import math
+from itertools import permutations
 
 TNum = TypeVar('TNum', int, float, complex)
 
@@ -214,22 +216,25 @@ class Matrix:
         m = Matrix(self.rows - 1, self.cols - 1, m)
         return m
 
-    def det(self, d: Union[int, float] = 0) -> Union[int, float, complex]:
-        """This is a function that will find the determinant of an n x n matrix
+    def det(self):
+        """This is a function that will return the determinant of an n x n matrix
 
-        DOES NOT WORK
-        TODO: Fix this method
-        :param d: Scalar
-        :return: Scalar
+        :return: scalar
         """
-        if self.is_square():
-            for i in range(0, self.cols):
-                m = self.minor(0, i)
-                c = self.cofactor(0, i)
-                print(d)
-                d += c * m.det()
-                print(d)
-        return d
+        if not self.is_square():
+            # determinant only defined for square matrices
+            raise DimensionError(f"Tried to take the determinant of a non-square matrix:\n{str(self)}")
+        lst = list(range(1, self.cols + 1))
+        total = 0
+        for perm in permutations(lst):
+            # for each permutation calculate the value to add to the sum
+            current_product = 1
+            perm_list = list(perm)
+            current_product *= levi_civita(perm_list)
+            for i in range(self.cols):
+                current_product *= self.mat[i][perm_list[i] - 1]
+            total += current_product
+        return total
 
     def transpose(self):
         """This is a function that will return the transpose of a matrix
@@ -509,21 +514,14 @@ def rotate(angle: Union[int, float], axis: str = 'z', dim: int = 3):
 
 
 def main():
-    m1 = Matrix(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-    m2 = Matrix(3, 3, [[5, 3, 2], [2, 8, 6], [3, 6, 7]])
-    m3 = from_list([1, 2, 3], 3, 1)
-    m4 = Matrix(2, 2, [[1, 0], [0, 1]])
-    m5 = Matrix(2, 2, [[1, 0], [0, 1]])
-    m6 = Matrix(1, 1, [[1]])
-    print(m2.trace())
+    print(Matrix(3, 3, [[1, 6, 2], [5, 8, 7], [4, -7, 1]]).det())
 
 
 if __name__ == '__main__':
     main()
 
 # TODO:
-#  Add unit tests for new operator definitions (matrices and vectors)
+#  Add unit tests for new operator definitions (matrices and vectors) and trace
 #  Add type/dimension tests in definitions of operators where needed
-#  Add function like np.linspace
 #  Add a size method to Matrix (should return tuple)
 #  Add __radd__/__rsub__ methods for integer operator matrix/vector scenarios
