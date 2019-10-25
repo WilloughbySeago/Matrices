@@ -65,13 +65,7 @@ class Matrix:
         :return: Matrix
         """
         if self.mat is None:
-            mat = []
-            for row in range(0, self.rows):
-                mat.append([])
-                i = 0
-                while i < self.cols:
-                    mat[row].append(0)
-                    i += 1
+            mat = [[0 for _ in range(self.cols)] for _ in range(self.rows)]
             return Matrix(self.rows, self.cols, mat)
         else:
             return self
@@ -171,16 +165,6 @@ class Matrix:
         else:
             raise TypeError("""Cannot multiply by that type, try an integer, float, complex number or matrix""")
 
-    def two_x_two_det(self) -> Union[int, float, complex]:
-        """This is a function that will find the determinant of a 2x2 matrix
-
-        :return: Scalar
-        """
-        if self.rows != 2 or self.cols != 2:  # check correct matrix passed to function
-            raise DimensionError("This function can only find the determinant of a 2x2 matrix")
-        else:
-            return self.mat[0][0] * self.mat[1][1] - self.mat[0][1] * self.mat[1][0]
-
     def cofactor(self, row: int, col: int) -> Union[int, float, complex]:
         """This is a function that will return the cofactor of a given spot in a matrix
 
@@ -240,6 +224,21 @@ class Matrix:
             m.append([])
             for j in range(self.rows):
                 m[i].append(self.mat[j][i])
+        return Matrix(self.rows, self.cols, m)
+
+    def hermitian_transpose(self):
+        """This function returns the Hermitian transpose (aka Hermitian conjugate) of the matrix
+
+        :return: Matrix
+        """
+        m = []
+        for i in range(self.cols):
+            m.append([])
+            for j in range(self.rows):
+                element = self.mat[j][i]
+                if type(element) == complex:
+                    element = element.conjugate()
+                m[i].append(element)
         return Matrix(self.rows, self.cols, m)
 
     def inverse(self):
@@ -393,9 +392,6 @@ class Matrix:
         for i in range(self.rows):
             total += self.mat[i][i]
         return total
-
-    def size(self):
-        return self.rows, self.cols
 
     def __add__(self, other):
         """Matrix or scalar addition"""
@@ -552,14 +548,13 @@ def rotate(angle: Union[int, float], axis: str = "z", dim: int = 3):
 
 
 def main():
-    m = Matrix(6, 6, [[0.88912578, 0.78867313, 0.9608768, 0.6500553, 0.45200995, 0.27023768],
-                      [0.95527886, 0.19017253, 0.65345586, 0.94710765, 0.07283995, 0.21777191],
-                      [0.68786232, 0.97256208, 0.34645699, 0.32704556, 0.78127252, 0.35919522],
-                      [0.72562005, 0.0868557, 0.12294961, 0.44181461, 0.35053735, 0.54636993],
-                      [0.6946066, 0.45648975, 0.57053946, 0.54601161, 0.28641313, 0.34937541],
-                      [0.07576868, 0.48703938, 0.21954126, 0.4943779, 0.56052572, 0.43063673]])
-    print(m.det())
-    print(m.inverse())
+    m = Matrix(6, 6, [[8+2j, 7-1j, 9, 6, 4, 2],
+                      [9, 1, 6, 9, 0, 2],
+                      [6, 9, 3, 3, 7, 3],
+                      [7, 0, 1, 4, 3, 5],
+                      [6, 4, 5, 5, 2, 3],
+                      [0, 4, 2, 4, 5, 4]])
+    print(m.hermitian_transpose())
 
 
 if __name__ == "__main__":
@@ -568,5 +563,3 @@ if __name__ == "__main__":
 # TODO:
 #  Add unit tests for new operator definitions (matrices and vectors) and trace
 #  Add type/dimension tests in definitions of operators where needed
-#  Add a size method to Matrix (should return tuple)
-#  Add __radd__/__rsub__ methods for integer operator matrix/vector scenarios

@@ -125,22 +125,6 @@ def test_mult_dim_error():
         assert False
 
 
-def test_two_by_two_det():
-    m1 = Matrix(2, 2, [[1, 2], [3, 4]])
-    det = m1.two_x_two_det()
-    assert det == -2
-
-
-def test_two_by_two_det_not_two_by_two_arg():
-    m = Matrix(3, 2)
-    try:
-        m.two_x_two_det()
-    except DimensionError:
-        assert True
-    else:
-        assert False
-
-
 def test_cofactor():
     m = Matrix(2, 2, [[1, 2], [3, 4]])
     cofactor = m.cofactor(1, 2)
@@ -150,7 +134,7 @@ def test_cofactor():
 def test_minor():
     m = Matrix(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     minor = m.minor(2, 3)
-    assert minor.mat == Matrix(2, 2, [[1, 2], [7, 8]]).mat
+    assert minor == Matrix(2, 2, [[1, 2], [7, 8]]).det()
 
 
 def test_transpose():
@@ -321,13 +305,7 @@ def test_neg_operator():
     assert m.mat == Matrix(2, 2, [[-1, -2], [-3, -4]]).mat
 
 
-def test_size():
-    m1 = Matrix(3, 2, [[1, 2], [3, 4], [5, 6]])
-    size = m1.size()
-    assert size == (3, 2)
-
-
-# static methods
+# other functions
 def test_identity():
     i = identity(3)
     assert i.mat == Matrix(3, 3, [[1, 0, 0], [0, 1, 0], [0, 0, 1]]).mat
