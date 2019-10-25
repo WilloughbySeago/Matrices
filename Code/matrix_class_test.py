@@ -323,7 +323,7 @@ def test_neg_operator():
 
 def test_size():
     m1 = Matrix(3, 2, [[1, 2], [3, 4], [5, 6]])
-    size = m1.size
+    size = m1.size()
     assert size == (3, 2)
 
 

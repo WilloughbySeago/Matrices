@@ -4,7 +4,7 @@ from typing import Union, List, Optional, Any, TypeVar
 import math
 from itertools import permutations
 
-TNum = TypeVar('TNum', int, float, complex)
+TNum = TypeVar("TNum", int, float, complex)
 
 
 class Matrix:
@@ -28,11 +28,11 @@ class Matrix:
         self._create()
 
     def __getattr__(self, item):
-        if item == 'size':
+        if item == "size":
             return self.rows, self.cols
 
     def __repr__(self):
-        string = ''
+        string = ""
         # find the widest (in terms of characters) entry in the matrix
         max_length = 0
         for k in range(self.rows):
@@ -45,16 +45,16 @@ class Matrix:
             for j in range(self.cols):
                 element = str(self.mat[k][j])
                 while len(element) < max_length:
-                    element = ' ' + element  # add whitespace before the element
+                    element = " " + element  # add whitespace before the element
                 row.append(element)  # ignore# until it is the length of the longest element
-            row_string = '['
+            row_string = "["
             for l in range(len(row)):
                 if l < len(row) - 1:
-                    row_string += row[l] + '   '  # add this as a seperator between rows
+                    row_string += row[l] + "   "  # add this as a seperator between rows
                 else:
                     row_string += row[l]
-            row_string += ']'
-            string += row_string + '\n'
+            row_string += "]"
+            string += row_string + "\n"
         return string
 
     def _create(self):
@@ -115,8 +115,7 @@ class Matrix:
                 return Matrix(self.rows, self.cols, m)
 
             else:
-                error("Cannot add two matrices of those dimensions")
-                raise DimensionError
+                raise DimensionError("Cannot add two matrices of those dimensions")
 
         elif type(other) in [int, float, complex]:  # scalar addition
             m = []
@@ -130,8 +129,7 @@ class Matrix:
             return Matrix(self.rows, self.cols, m)
 
         else:
-            error("Cannot add that type, try an integer, float, complex number or matrix")
-            raise TypeError
+            raise TypeError("Cannot add that type, try an integer, float, complex number or matrix")
 
     def mult(self, other: Union[int, float, complex, Any]):
         """This will multiply a matrix by a scalar or another matrix
@@ -141,19 +139,18 @@ class Matrix:
         """
         if type(other) in [int, float, complex]:  # scalar multiplication
             m = []
-            for row in range(0, self.rows):
+            for row in range(self.rows):
                 m.append([])
-                for col in range(0, self.cols):
+                for col in range(self.cols):
                     m[row].append(0)
-            for row in range(0, self.rows):
-                for col in range(0, self.cols):
+            for row in range(self.rows):
+                for col in range(self.cols):
                     m[row][col] = self.mat[row][col] * other
             return Matrix(self.rows, self.cols, m)
 
         elif isinstance(other, Matrix):  # matrix multiplication
             if self.cols != other.rows:  # check multiplication possible
-                error("Cannot multiply two matrices of those dimensions")
-                raise DimensionError
+                raise DimensionError("Cannot multiply two matrices of those dimensions")
             else:
                 m = []
                 for i in range(0, self.rows):
@@ -172,9 +169,7 @@ class Matrix:
                 return Matrix(self.rows, other.cols, m)
 
         else:
-            error("""Cannot multiply by that type, 
-                  try an integer, float, complex number or matrix""")
-            raise TypeError
+            raise TypeError("""Cannot multiply by that type, try an integer, float, complex number or matrix""")
 
     def two_x_two_det(self) -> Union[int, float, complex]:
         """This is a function that will find the determinant of a 2x2 matrix
@@ -182,8 +177,7 @@ class Matrix:
         :return: Scalar
         """
         if self.rows != 2 or self.cols != 2:  # check correct matrix passed to function
-            error("This function can only find the determinant of a 2x2 matrix")
-            raise DimensionError
+            raise DimensionError("This function can only find the determinant of a 2x2 matrix")
         else:
             return self.mat[0][0] * self.mat[1][1] - self.mat[0][1] * self.mat[1][0]
 
@@ -201,7 +195,7 @@ class Matrix:
 
         :param row: int
         :param col: int
-        :return: Matrix
+        :return: Scalar
         """
         m = []
         for i in range(0, self.rows):
@@ -214,7 +208,7 @@ class Matrix:
                         else:
                             m[i - 1].append(self.mat[i][j])
         m = Matrix(self.rows - 1, self.cols - 1, m)
-        return m
+        return m.det()
 
     def det(self):
         """This is a function that will return the determinant of an n x n matrix
@@ -248,6 +242,34 @@ class Matrix:
                 m[i].append(self.mat[j][i])
         return Matrix(self.rows, self.cols, m)
 
+    def inverse(self):
+        """This function returns the inverse of a matrix
+
+        if the matrix isn't square you will get a DimensionError
+        if the determinant is zero there is no inverse so None is returned
+        :return: Matrix or None
+        """
+        # check conditions for inverse to exist
+        if not self.is_square():
+            raise DimensionError(f"No inverse for a {self.dim()} matrix:\n{self}")
+        det = self.det()
+        if det == 0:
+            return None
+        # inverse exists if you get this far
+
+        # create blank matrix of 0s with same dimensions to fill in values later
+        inv_mat = [[0 for _ in range(self.cols)] for _ in range(self.rows)]
+        inverse = Matrix(self.rows, self.cols, inv_mat)
+
+        # calculate each individual value
+        for i in range(1, self.rows + 1):
+            for j in range(1, self.cols + 1):
+                minor = self.minor(j, i)
+                sign = 1 if ((i + j) % 2 == 0) else -1
+                element = sign * minor / det
+                inverse.mat[i - 1][j - 1] = element
+        return inverse
+
     def reshape(self, row: int, col: int):
         """This is a function that takes a matrix and then reshapes it to the given dimensions
 
@@ -269,10 +291,9 @@ class Matrix:
             return Matrix(row, col, m)
         else:
             if old_size > new_size:
-                error("There are more components than fit in a matrix of that size")
+                raise DimensionError("There are more components than fit in a matrix of that size")
             else:
-                error("There are not enough components to fill a matrix of this size")
-            raise DimensionError
+                raise DimensionError("There are not enough components to fill a matrix of this size")
 
     def to_list(self) -> List[Union[int, float, complex, Any]]:
         """This is a function that returns a list of all components of matrix
@@ -311,8 +332,7 @@ class Matrix:
                         m[i].append(function(a, b))
                 return Matrix(self.rows, self.cols, m)
             else:
-                error("These matrices are of different dimensions")
-                raise DimensionError
+                raise DimensionError("These matrices are of different dimensions")
 
     def mat_mean(self) -> Union[int, float, complex]:
         """This is a function that will return the mean of all elements in the matrix
@@ -345,8 +365,7 @@ class Matrix:
                 v.append(self.mat[i][0])
             return Vector(v)
         else:
-            error(f"Cannot make a vector of those dimensions: {self.rows} x {self.cols}")
-            raise DimensionError
+            raise DimensionError(f"Cannot make a vector of those dimensions: {self.rows} x {self.cols}")
 
     def mat_is_equal(self, other):
         """This function returns true if self and other are the same matrix (not the same object)
@@ -375,11 +394,26 @@ class Matrix:
             total += self.mat[i][i]
         return total
 
+    def size(self):
+        return self.rows, self.cols
+
     def __add__(self, other):
         """Matrix or scalar addition"""
         return self.add(other)
 
+    def __radd__(self, other):
+        """Matrix or scalar addition"""
+        return self.add(other)
+
     def __sub__(self, other):
+        """Matrix or scalar subtraction"""
+        if isinstance(other, Matrix):
+            neg_other = other.mult(-1)
+            return self.add(neg_other)
+        elif type(other) in [int, float, complex]:
+            return self.add(-other)
+
+    def __rsub__(self, other):
         """Matrix or scalar subtraction"""
         if isinstance(other, Matrix):
             neg_other = other.mult(-1)
@@ -392,8 +426,14 @@ class Matrix:
         if type(other) in [int, float, complex]:
             return self.mult(other)
         else:
-            error(f"Unsupported operation '*' between types '{type(self)}' and '{type(other)}'")
-            raise TypeError
+            raise TypeError(f"Unsupported operation '*' between types '{type(self)}' and '{type(other)}'")
+
+    def __rmul__(self, other):
+        """Scalar or elementwise multiplication"""
+        if type(other) in [int, float, complex]:
+            return self.mult(other)
+        else:
+            raise TypeError(f"Unsupported operation '*' between types '{type(self)}' and '{type(other)}'")
 
     def __matmul__(self, other):
         """Matrix multiplication"""
@@ -405,8 +445,7 @@ class Matrix:
             inverse = 1 / other
             return self.mult(inverse)
         else:
-            error(f"Unsupported operation '/' between types '{type(self)}' and '{type(other)}'")
-            raise TypeError
+            raise TypeError(f"Unsupported operation '/' between types '{type(self)}' and '{type(other)}'")
 
     def __eq__(self, other):
         """Test for equality"""
@@ -474,10 +513,9 @@ def from_list(components: List, rows: int, cols: int):
         return Matrix(rows, cols, m)
     else:
         if length_components > size_matrix:
-            error("There are more components than fit in this matrix")
+            raise DimensionError("There are more components than fit in this matrix")
         else:
-            error("There aren't enough components to fill this matrix")
-        raise DimensionError
+            raise DimensionError("There aren't enough components to fill this matrix")
 
 
 def from_vec(vec):
@@ -490,7 +528,7 @@ def from_vec(vec):
     return from_list(lst, len(lst), 1)
 
 
-def rotate(angle: Union[int, float], axis: str = 'z', dim: int = 3):
+def rotate(angle: Union[int, float], axis: str = "z", dim: int = 3):
     """This is a function which returns a rotation matrix
 
     :param angle: real number
@@ -500,13 +538,13 @@ def rotate(angle: Union[int, float], axis: str = 'z', dim: int = 3):
     """
     c = round(math.cos(angle), 3)
     s = round(math.sin(angle), 3)
-    if axis == 'z' and dim == 2:
+    if axis == "z" and dim == 2:
         return from_list([c, s, -s, c], 2, 2)
-    elif axis == 'x' and dim == 3:
+    elif axis == "x" and dim == 3:
         return from_list([1, 0, 0, 0, c, s, 0, -s, c], 3, 3)
-    elif axis == 'y' and dim == 3:
+    elif axis == "y" and dim == 3:
         return from_list([c, 0, -s, 0, 1, 0, s, 0, c], 3, 3)
-    elif axis == 'z' and dim == 3:
+    elif axis == "z" and dim == 3:
         return from_list([c, s, 0, -s, c, 0, 0, 0, 1], 3, 3)
 
 
@@ -514,10 +552,17 @@ def rotate(angle: Union[int, float], axis: str = 'z', dim: int = 3):
 
 
 def main():
-    print(Matrix(3, 3, [[1, 6, 2], [5, 8, 7], [4, -7, 1]]).det())
+    m = Matrix(6, 6, [[0.88912578, 0.78867313, 0.9608768, 0.6500553, 0.45200995, 0.27023768],
+                      [0.95527886, 0.19017253, 0.65345586, 0.94710765, 0.07283995, 0.21777191],
+                      [0.68786232, 0.97256208, 0.34645699, 0.32704556, 0.78127252, 0.35919522],
+                      [0.72562005, 0.0868557, 0.12294961, 0.44181461, 0.35053735, 0.54636993],
+                      [0.6946066, 0.45648975, 0.57053946, 0.54601161, 0.28641313, 0.34937541],
+                      [0.07576868, 0.48703938, 0.21954126, 0.4943779, 0.56052572, 0.43063673]])
+    print(m.det())
+    print(m.inverse())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
 
 # TODO:

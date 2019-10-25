@@ -2,7 +2,7 @@ from Code.errors import *
 import math
 from typing import Union, List, TypeVar
 
-TNum = TypeVar('TNum', int, float, complex)
+TNum = TypeVar("TNum", int, float, complex)
 
 
 class Vector:
@@ -26,16 +26,14 @@ class Vector:
         :return: Scalar
         """
         if not isinstance(other, Vector):
-            error('Other must be a vector')
-            raise TypeError
+            raise TypeError("Other must be a vector")
         a = self.vec
         b = other.vec
         if len(a) == len(b):
             a_dot_b = sum([a_i * b_i for a_i, b_i in zip(a, b)])
             return a_dot_b
         else:
-            error("Cannot do a dot product with two vectors of these dimensions")
-            raise DimensionError
+            raise DimensionError("Cannot do a dot product with two vectors of these dimensions")
 
     def cross_prod(self, other):
         """
@@ -44,8 +42,7 @@ class Vector:
         :return: Vector
         """
         if not isinstance(other, Vector):
-            error('Other must be a 3D vector')
-            raise TypeError
+            raise TypeError("Other must be a 3D vector")
         a = self.vec
         b = other.vec
         if len(a) == 3 and len(b) == 3:
@@ -54,8 +51,7 @@ class Vector:
             z = a[0] * b[1] - a[1] * b[0]
             return Vector([x, y, z])
         else:
-            error("Cannot do a cross product with non-3D vectors")
-            raise DimensionError
+            raise DimensionError("Cannot do a cross product with non-3D vectors")
 
     def vec_add(self, other):
         """
@@ -64,13 +60,11 @@ class Vector:
         :return: Vector
         """
         if not isinstance(other, Vector):
-            error('This function is for adding vectors, \nto add elementwise use self.elementwise()')
-            raise TypeError
+            raise TypeError("This function is for adding vectors, \nto add elementwise use self.elementwise()")
         a = self.vec
         b = other.vec
         if len(a) != len(b):
-            error("Cannot add vectors of different dimensions")
-            raise DimensionError
+            raise DimensionError("Cannot add vectors of different dimensions")
         else:
             a_plus_b = [x + y for x, y in zip(a, b)]
             return Vector(a_plus_b)
@@ -85,8 +79,7 @@ class Vector:
             scaled = [a * scalar for a in self.vec]
             return Vector(scaled)
         else:
-            error("Cannot multiply by a non-scalar")
-            raise TypeError
+            raise TypeError("Cannot multiply by a non-scalar")
 
     def mag(self) -> Union[int, float]:
         """
@@ -117,8 +110,7 @@ class Vector:
             angle = math.acos(a_dot_b / (a * b))
             return angle
         else:
-            error("Cannot work out angle between non-vectors")
-            raise TypeError
+            raise TypeError("Cannot work out angle between non-vectors")
 
     def elementwise(self, function):
         """
@@ -194,5 +186,5 @@ def main():
     print(len(v1))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
