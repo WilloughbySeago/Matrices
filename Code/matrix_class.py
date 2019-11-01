@@ -393,6 +393,23 @@ class Matrix:
             total += self.mat[i][i]
         return total
 
+    def is_eigenvector(self, vector):
+        """This method will return a boolean as to whether or not vector is an eigenvector of self
+
+        :param vector: Vector
+        :return: boolean
+        """
+        normalised_vector = vector / vector.mag()  # comparing directions not sizes
+        mat_vector = from_vec(vector)
+        # arg of mult() goes first and we need the transpose as u.v = u^T v
+        transformed_mat_vector = mat_vector.transpose().mult(self)
+        transformed_vector = Vector(transformed_mat_vector.mat[0])  # [0] as 1D matrix is [[1, 2, 3, ...]]
+        normalised_transformed = transformed_vector / transformed_vector.mag()
+        # note that direction may have flipped so now negative
+        print(normalised_vector)
+        print(normalised_transformed)
+        return normalised_vector == normalised_transformed or normalised_vector == (-normalised_transformed)
+
     def __add__(self, other):
         """Matrix or scalar addition"""
         return self.add(other)
@@ -548,13 +565,10 @@ def rotate(angle: Union[int, float], axis: str = "z", dim: int = 3):
 
 
 def main():
-    m = Matrix(6, 6, [[8+2j, 7-1j, 9, 6, 4, 2],
-                      [9, 1, 6, 9, 0, 2],
-                      [6, 9, 3, 3, 7, 3],
-                      [7, 0, 1, 4, 3, 5],
-                      [6, 4, 5, 5, 2, 3],
-                      [0, 4, 2, 4, 5, 4]])
-    print(m.hermitian_transpose())
+    m = Matrix(2, 2, [[0, 1], [1, 0]])
+    v = Vector([-1, 1])
+    print(m.is_eigenvector(v))
+    print(m.get_eigenvalue(v))
 
 
 if __name__ == "__main__":
