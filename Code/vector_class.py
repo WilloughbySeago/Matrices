@@ -1,5 +1,6 @@
 from Code.errors import *
 import math
+import cmath
 from typing import Union, List, TypeVar
 
 TNum = TypeVar("TNum", int, float, complex)
@@ -9,8 +10,8 @@ class Vector:
     """This is a class of vectors"""
 
     def __init__(self, vec: List[TNum]) -> None:
-        """
-        Initialise the vector
+        """Initialise the vector
+
         :param vec: list
         """
         self.vec = vec
@@ -20,14 +21,14 @@ class Vector:
         return str(self.vec)
 
     def dot_prod(self, other) -> Union[int, float, complex]:
-        """
-        This is a function that returns the dot product of two vectors
+        """This is a function that returns the dot product of two vectors
+
         :param other: Vector
         :return: Scalar
         """
         if not isinstance(other, Vector):
             raise TypeError("Other must be a vector")
-        a = self.vec
+        a = [i.conjugate() if type(i) == complex else i for i in self.vec]  # complex conjugate of a
         b = other.vec
         if len(a) == len(b):
             a_dot_b = sum([a_i * b_i for a_i, b_i in zip(a, b)])
@@ -36,8 +37,8 @@ class Vector:
             raise DimensionError("Cannot do a dot product with two vectors of these dimensions")
 
     def cross_prod(self, other):
-        """
-        This is a function that returns the cross product of two vectors
+        """This is a function that returns the cross product of two vectors
+
         :param other: Vector
         :return: Vector
         """
@@ -54,8 +55,8 @@ class Vector:
             raise DimensionError("Cannot do a cross product with non-3D vectors")
 
     def vec_add(self, other):
-        """
-        This is a function to add two vectors
+        """This is a function to add two vectors
+
         :param other: Vector
         :return: Vector
         """
@@ -70,8 +71,8 @@ class Vector:
             return Vector(a_plus_b)
 
     def vec_mult(self, scalar: Union[int, float, complex]):
-        """
-        This is a function that multiplies a vector by a scalar
+        """This is a function that multiplies a vector by a scalar
+
         :param scalar: Scalar
         :return: Vector
         """
@@ -82,15 +83,15 @@ class Vector:
             raise TypeError("Cannot multiply by a non-scalar")
 
     def mag(self) -> Union[int, float]:
-        """
-        This is a function that returns the magnitude of a vector
+        """This is a function that returns the magnitude of a vector
+
         :return: Scalar
         """
         return math.sqrt(sum([x ** 2 for x in self.vec]))
 
     def unit(self):
-        """
-        This is a function that returns a unit vector in the direction of the given vector
+        """This is a function that returns a unit vector in the direction of the given vector
+
         :return: Vector
         """
         mag = self.mag()
@@ -98,8 +99,8 @@ class Vector:
         return unit
 
     def angle(self, other) -> Union[int, float]:
-        """
-        This is a function that calculates the angle between two vectors
+        """This is a function that calculates the angle between two vectors
+
         :param other: Vector
         :return: Scalar
         """
@@ -113,28 +114,32 @@ class Vector:
             raise TypeError("Cannot work out angle between non-vectors")
 
     def elementwise(self, function):
-        """
-        This is a function that applies a given function to every element of a vector
+        """This is a function that applies a given function to every element of a vector
+
         :param function: function
         :return: Vector
         """
         return Vector([function(x) for x in self.vec])
 
     def vec_mean(self) -> Union[int, float, complex]:
-        """
-        This is a function that returns the mean of all values in a vector
+        """This is a function that returns the mean of all values in a vector
+
         :return: Scalar
         """
         return sum(self.vec) / len(self.vec)
 
     def vec_sum(self) -> Union[int, float, complex]:
-        """
-        This is a function that returns the sum of all elemts of a vector
+        """This is a function that returns the sum of all elements of a vector
+
         :return: Scalar
         """
         return sum(self.vec)
 
     def vec_is_equal(self, other) -> bool:
+        """This function returns true if the two vectors are the same
+
+        :return: bool
+        """
         if not isinstance(other, Vector):
             return False
         if len(self.vec) != len(other.vec):
