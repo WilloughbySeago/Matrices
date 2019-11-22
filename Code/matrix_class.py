@@ -153,13 +153,11 @@ class Matrix:
                         m[i].append(0)
                 for i in range(0, self.rows):
                     for j in range(0, other.cols):
-                        a = Vector(self.mat[i])  # create vector from row of self
+                        a = self.mat[i]  # create vector from row of self
                         b = []
                         for k in range(0, other.rows):
                             b.append(other.mat[k][j])
-                        b = Vector(b)  # create vector from column of other
-                        c = a.dot_prod(b)
-                        m[i][j] = c
+                        m[i][j] = sum([n * m for n, m in zip(a, b)])
                 return Matrix(self.rows, other.cols, m)
 
         else:
